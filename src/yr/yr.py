@@ -5,6 +5,7 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("YR")
 
 YR_API_BASE = "https://api.met.no/weatherapi/locationforecast/2.0"
+USER_AGENT = "https://github.com/AnyContext-ai/mcp-servers/blob/main/src/yr/yr.py"
 
 async def make_weather_forecast_request(type: Literal["compact", "complete"], latitude: float, longitude: float, altitude: Optional[int] = None) -> Any:
     """Execute the weather forecast query
@@ -23,7 +24,7 @@ async def make_weather_forecast_request(type: Literal["compact", "complete"], la
         url = f"{url}&altitude={altitude}"
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(url)
+            response = await client.get(url, headers={"User-Agent": USER_AGENT})
             response.raise_for_status()
             return response.json()
         except Exception as e:
@@ -63,7 +64,3 @@ async def get_weather_forecast_complete(latitude: float, longitude: float, altit
 
 if __name__ == "__main__":
     mcp.run(transport="sse")
-        
-    
-            
-            
